@@ -75,3 +75,7 @@ class UserInfoView(APIView):
             return Response({'message': '저장 완료!'}, status=status.HTTP_200_OK)
 
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # 회원탈퇴
+    def delete(self, request):
+        return Response({})
