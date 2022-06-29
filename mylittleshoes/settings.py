@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'user',
     'history',
     'upload',
+    'rest_framework',
+    'recommend',
 ]
 
 MIDDLEWARE = [
