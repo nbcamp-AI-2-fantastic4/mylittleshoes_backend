@@ -61,3 +61,16 @@ class UserSerializer(serializers.ModelSerializer):
         userprofile = UserProfile.objects.create(user=user, **userprofile)
 
         return validated_data
+
+
+    # instance : 수정할 object
+    # validated_data : 수정할 내용
+    def update(self, instance, validated_data):
+        # validated_data = {'username': 'dongwoo', 'email': 'esdx@daum.net', ...}
+        for key, value in validated_data.items():
+            if not key == 'password':
+                setattr(instance, key, value)
+        instance.save()
+
+
+        return instance
