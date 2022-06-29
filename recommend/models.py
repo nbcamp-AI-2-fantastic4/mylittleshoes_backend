@@ -17,7 +17,14 @@ class Shoes(models.Model):
     )
     STATUS_COLOR = (
      ('red', '빨간색'),
+     ('orange', '주황색'),
+     ('yellow', '노란색'),
      ('green', '초록색'),
+     ('blue', '파란색'),
+     ('indigo','남색'),
+     ('purple','보라색'),
+     ('white','하얀색'),
+     ('black','검은색'),
      ('other', '기타'),
     )
     brand = models.ForeignKey(Brand, verbose_name="브랜드", on_delete=models.CASCADE)
