@@ -11,11 +11,11 @@ class History(models.Model):
     user = models.ForeignKey(User, verbose_name='사용자', on_delete=models.CASCADE)
     image = models.ForeignKey(Image, verbose_name='사용된 이미지', on_delete=models.CASCADE)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
-    exposure_start = models.DateField('노출 시작일', default="2022-06-29 00:00:00")
-    exposure_end = models.DateField('노출 종료', default="2022-07-29 00:00:00")
+    exposure_start = models.DateTimeField('노출 시작일', default=datetime(2022, 6, 29))
+    exposure_end = models.DateTimeField('노출 종료', default=datetime(2023, 6, 29))
 
     def __str__(self):
-        return self.created_at
+        return f"{self.user.username}'s history - {self.id}"
 
 # 코멘트 모델
 class Comment(models.Model):
@@ -24,7 +24,7 @@ class Comment(models.Model):
     content = models.CharField('댓글 내용', max_length=100)
 
     def __str__(self):
-        return self.content
+        return f"{self.user.username}'s comment - {self.id}"
 
 # 좋아요 모델
 class Like(models.Model):

@@ -8,6 +8,9 @@ from django.db import models
 class Brand(models.Model):
     name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
+
 # 신발 추천 모델
 class Shoes(models.Model):
     STATUS_HEIGHT = (
@@ -33,4 +36,5 @@ class Shoes(models.Model):
     height = models.CharField("높이", choices=STATUS_HEIGHT, max_length=10)
     image = models.ImageField('신발 이미지', upload_to="static/")
 
-    
+    def __str__(self):
+        return self.name

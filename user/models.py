@@ -34,7 +34,7 @@ class User(AbstractBaseUser):
     join_date = models.DateTimeField('생성시각', auto_now_add=True)
     
     def __str__(self):
-        return f"{self.username}'s user_info"
+        return f"{self.username}"
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)

@@ -55,19 +55,16 @@ class UserInfoView(APIView):
     def put(self, request):
         user = request.user
 
-        password = request.data.get('password_old', '')
         confirm_data = { 
             'email': user.email,
-            'password': password,
+            'password': request.data.get('password_old', ''),
         }
         user = authenticate(request, **confirm_data)
         if not user:
             return Response({'message': '비밀번호를 확인해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
         if request.data.get('password_new'):
-            password = request.data.get('password_new')
-        
-        request.data['password'] = password
+            request.data['password'] = request.data.get('password_new')
 
         user_serializer = UserSerializer(user, data=request.data, partial=True)
         if user_serializer.is_valid():  # validation
@@ -78,4 +75,23 @@ class UserInfoView(APIView):
 
     # 회원탈퇴
     def delete(self, request):
-        return Response({})
+        confirm_word = request.data.get('confirm_word', '')
+        if confirm_word != '확인':
+            return Response({'error': '회원 탈퇴 확인 메시지를 정확히 입력해주세요'}, 
+                             status=status.HTTP_400_BAD_REQUEST)
+
+        email = request.user.email
+        password = request.data.get('password', '')
+        
+        confirm_data = { 
+            'email': email,
+            'password': password,
+        }
+        user = authenticate(request, **confirm_data)
+        if not user:
+            return Response({'error': '비밀번호를 확인해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        logout(request)
+        user.delete()
+
+        return Response({'message': '삭제 성공!'}, status=status.HTTP_200_OK)

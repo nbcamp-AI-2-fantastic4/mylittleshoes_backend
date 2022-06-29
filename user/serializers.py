@@ -27,27 +27,28 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def validate(self, data):
-        password = data.get('password', "")
+        if self.instance is None or data.get('password'):
+            password = data.get('password', "")
+            
+            if len(password) < 8 or len(password) > 14:
+                raise serializers.ValidationError(
+                        detail={"error": "비밀번호는 8글자 이상, 14글자 이하이어야합니다."},
+                    )
 
-        if len(password) < 8 or len(password) > 14:
-            raise serializers.ValidationError(
-                    detail={"error": "비밀번호는 8글자 이상, 14글자 이하이어야합니다."},
-                )
+            if not any(char in SPECIAL_CHAR for char in password):
+                raise serializers.ValidationError(
+                        detail={"error": "특수문자가 1개이상 포함되어야합니다."},
+                    )
 
-        if not any(char in SPECIAL_CHAR for char in password):
-            raise serializers.ValidationError(
-                    detail={"error": "특수문자가 1개이상 포함되어야합니다."},
-                )
+            if re.search('[0-9]+', password) is None:
+                raise serializers.ValidationError(
+                        detail={"error": "숫자가 1개이상 포함되어야합니다."},
+                    )
 
-        if re.search('[0-9]+', password) is None:
-            raise serializers.ValidationError(
-                    detail={"error": "숫자가 1개이상 포함되어야합니다."},
-                )
-
-        if (re.search('[a-z]+', password) is None) and (re.search('[A-Z]+', password) is None):
-            raise serializers.ValidationError(
-                    detail={"error": "영문 대문자 또는 소문자가 1개이상 포함되어야합니다."},
-                )
+            if (re.search('[a-z]+', password) is None) and (re.search('[A-Z]+', password) is None):
+                raise serializers.ValidationError(
+                        detail={"error": "영문 대문자 또는 소문자가 1개이상 포함되어야합니다."},
+                    )
 
         return data
 
@@ -68,9 +69,17 @@ class UserSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # validated_data = {'username': 'dongwoo', 'email': 'esdx@daum.net', ...}
         for key, value in validated_data.items():
-            if not key == 'password':
-                setattr(instance, key, value)
+            if key == "password":
+                instance.set_password(value)
+                continue
+
+            if key == "userprofile":
+                for key_2, value_2 in value.items():
+                    setattr(instance.userprofile, key_2, value_2)
+                continue
+
+            setattr(instance, key, value)
+
         instance.save()
-
-
+        instance.userprofile.save()
         return instance
