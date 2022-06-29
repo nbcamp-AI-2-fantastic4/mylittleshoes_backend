@@ -6,7 +6,7 @@ from rest_framework import permissions, status
 from django.contrib.auth import login, authenticate, logout
 
 from .serializers import UserSerializer
-
+from history.models import History, Like
 
 # 로그인/로그아웃 기능
 class UserView(APIView):
@@ -87,6 +87,7 @@ class UserInfoView(APIView):
             'email': email,
             'password': password,
         }
+
         user = authenticate(request, **confirm_data)
         if not user:
             return Response({'error': '비밀번호를 확인해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -95,3 +96,24 @@ class UserInfoView(APIView):
         user.delete()
 
         return Response({'message': '삭제 성공!'}, status=status.HTTP_200_OK)
+
+# 회원 히스토리 기능
+class UserHistoryView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    # 회원 히스토리 조회 기능
+    def get(self, request):
+        histories = History.objects.filter(user=request.user)
+        history_ids = [history.id for history in histories]
+        return Response(history_ids, status=status.HTTP_200_OK)
+
+# 회원 히스토리 좋아요 기능
+class UserHistoryLikeView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    # 좋아요누른 히스토리 조회 기능
+    def get(self, request):
+        likes = Like.objects.filter(user=request.user)
+        histories = [like.history for like in likes]
+        history_ids = [history.id for history in histories]
+        return Response(history_ids, status=status.HTTP_200_OK)
