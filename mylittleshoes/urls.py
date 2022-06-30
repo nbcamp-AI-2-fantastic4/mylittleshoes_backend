@@ -22,4 +22,5 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('history/', include('history.urls')),
     path('upload/', include('upload.urls')),
+    path('recommend/', include('upload.urls')),
 ]
