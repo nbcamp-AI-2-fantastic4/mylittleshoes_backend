@@ -1,13 +1,25 @@
-# from dataclasses import fields
-# from rest_framework import serializers
+from rest_framework import serializers
 
-# from recommend.models import Shoes as Shoesmod
+from recommend.models import Shoes, Brand
+# from django.contrib.auth import get_user_model
 
 
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = ['id', 'name']
 
-# class CategorySerializer(serializers.ModelSerializer):
 
-#     class Meta:
-#         model = CategoryModel
-#         fields = ["name"]
+class ShoesSerializer(serializers.ModelSerializer):
+    brand = BrandSerializer(read_only=True)
 
+    class Meta:
+        model = Shoes
+        fields = [
+            'id',
+            'brand',
+            'name',
+            'color',
+            'height',
+            'image'
+        ]

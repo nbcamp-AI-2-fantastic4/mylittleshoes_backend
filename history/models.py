@@ -9,7 +9,7 @@ from upload.models import Image
 # 히스토리 모델
 class History(models.Model):
     user = models.ForeignKey(User, verbose_name='사용자', on_delete=models.CASCADE)
-    image = models.ForeignKey(Image, verbose_name='사용된 이미지', on_delete=models.CASCADE)
+    image = models.OneToOneField(Image, verbose_name='사용된 이미지', on_delete=models.CASCADE)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     exposure_start = models.DateTimeField('노출 시작일', default=datetime(2022, 6, 29))
     exposure_end = models.DateTimeField('노출 종료', default=datetime(2023, 6, 29))
