@@ -39,10 +39,22 @@ class HistorySerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
 
     user = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField(read_only=True)
 
     def get_user(self, obj):
         return obj.user.username
 
+    def get_image(self, obj):
+        images = {}
+        image_one = str(obj.history.image.image_one)
+        image_two = str(obj.history.image.image_two)
+        image_result = str(obj.history.image.image_result)
+        images['image_one'] = image_one
+        images['image_two'] = image_two
+        images['image_result'] = image_result
+        
+        return images
+
     class Meta:
         model = Comment
-        fields = ["user", "history", "content"]
+        fields = ["user", "history", "content", "image"]
