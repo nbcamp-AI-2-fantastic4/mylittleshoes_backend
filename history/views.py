@@ -9,6 +9,7 @@ from django.db.models.query_utils import Q
 
 from history.models import History, Comment, Like
 from upload.models import Image
+from user.models import User
 from history.serializers import CommentSerializer, HistorySerializer
 
 
@@ -94,13 +95,18 @@ class LikeView(APIView):
 
     # 좋아요 저장
     def post(self, request, history_id):
+
         history = History.objects.get(id=history_id)
-        
+
+        if User.objects.get(history=history):
+            return Response({"msg":"이미 좋아요를 누름"})
+
         Like.objects.create(user=request.user, history=history)
         return Response({"msg":"post 요청"})
 
     # 좋아요 취소
     def delete(self, request, history_id):
+        
         history = History.objects.get(id=history_id)
         likes = Like.objects.filter(history=history)
         user_like = likes.get(user=request.user)
