@@ -44,7 +44,6 @@ class ImageResultView(APIView):
 
     # 저장하기 버튼 클릭 : 이미지 저장
     def post(self, request):
-        print(request.data)
 
         img_serializer = ImageSerializer(data=request.data)
 
