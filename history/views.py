@@ -29,7 +29,7 @@ class HistoryView(APIView):
         
         # histories 쿼리셋을 시리얼라이저
         histories_serializer = HistorySerializer(histories, many=True).data
-        return Response(histories_serializer, status=status.HTTP_200_OK)
+        return Response({"result_history":histories_serializer}, status=status.HTTP_200_OK)
     
     # 결과 히스토리 저장
     def post(self, request):
@@ -51,14 +51,14 @@ class HistoryView(APIView):
 class CommentView(APIView):
 
     # 댓글 조회
-    def get(self, request):
+    def get(self, request, history_id):
         print(request.GET)
-        history_id = request.GET.get('history',"")
-        # history = History.objects.get(id=history_id)
-        comments = Comment.objects.filter(history=history_id)
+        # history_id = request.GET.get('history',"")
+        history = History.objects.get(id=history_id)
+        comments = Comment.objects.filter(history=history)
         
         comment_serializer = CommentSerializer(comments, many=True).data
-        return Response(comment_serializer, status=status.HTTP_200_OK)
+        return Response({"result_comment":comment_serializer}, status=status.HTTP_200_OK)
 
     # 댓글 작성
     def post(self, request):
