@@ -15,15 +15,15 @@ class ImageUploadView(APIView):
         image_one = request.FILES.get("image_one", "")
         image_two = request.FILES.get("image_two", "")
 
-        image_result = request.FILES.get("image_result", "")
+        # image_one, image_two를 이용해서 모델 사용
+        image_result = 0
 
-        return Response(image_one, image_two, image_result ,status=status.HTTP_200_OK)
+        return Response(image_result ,status=status.HTTP_200_OK)
 
 # 이미지 결과 페이지
 class ImageResultView(APIView):
     # 이미지 3장 불러오기
     def get(self, request):
-        # GET 요청으로 image에 대한 정보들 불러오기?
         image_one = request.GET.get("image_one", "")
         image_two = request.GET.get("image_two", "")
         image_result = request.GET.get("image_result", "")
