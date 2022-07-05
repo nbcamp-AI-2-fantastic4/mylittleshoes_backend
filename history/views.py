@@ -11,7 +11,7 @@ from history.models import History, Comment, Like
 from upload.models import Image
 from user.models import User
 from history.serializers import CommentSerializer, HistorySerializer
-
+import json
 
 class HistoryView(APIView):
 
@@ -43,7 +43,6 @@ class HistoryView(APIView):
         if history_serializer.is_valid():
             history_serializer.save(user=request.user, image=image_obj)
             return Response(history_serializer.data, status=status.HTTP_200_OK)
-            # return Response({})
         
         return Response(history_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -52,22 +51,31 @@ class CommentView(APIView):
 
     # 댓글 조회
     def get(self, request, history_id):
-        print(request.GET)
-        # history_id = request.GET.get('history',"")
         history = History.objects.get(id=history_id)
-        comments = Comment.objects.filter(history=history)
-        
+        history_serializer = HistorySerializer(history).data
+
+        comments = Comment.objects.filter(history_id=history_id)
         comment_serializer = CommentSerializer(comments, many=True).data
-        return Response({"result_comment":comment_serializer}, status=status.HTTP_200_OK)
+        
+        print(history_serializer)
+        print(comment_serializer)
+        
+        return Response({ "result_history": history_serializer,
+                          "result_comment": comment_serializer}, 
+                          status=status.HTTP_200_OK)
 
     # 댓글 작성
-    def post(self, request):
+    def post(self, request, history_id):
+        data = json.loads(request.body)
+        data['history'] = history_id
+        user = User.objects.get(id=int(data['user'])) 
 
-        comment_serializer = CommentSerializer(data=request.data)
+        comment_serializer = CommentSerializer(data=data)
         
         if comment_serializer.is_valid():
-            comment_serializer.save(user=request.user)
-            return Response(comment_serializer.data, status=status.HTTP_200_OK)
+            comment_serializer.save(user=user)
+            comments = Comment.objects.filter(history_id=history_id)
+            return Response(CommentSerializer(comments, many=True).data, status=status.HTTP_200_OK)
         
         return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

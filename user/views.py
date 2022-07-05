@@ -26,8 +26,10 @@ class UserView(APIView):
             return Response({'message': msg}, status=status.HTTP_400_BAD_REQUEST)
 
         login(request, user)
+
+        id = user.id
         msg = '로그인 성공!'
-        return Response({'message': msg}, status=status.HTTP_200_OK)
+        return Response({'message': msg, 'id': id, 'fullname': user.fullname, 'email': user.email}, status=status.HTTP_200_OK)
 
     # 로그아웃 기능
     def delete(self, request):

@@ -12,6 +12,10 @@ class BrandSerializer(serializers.ModelSerializer):
 
 class ShoesSerializer(serializers.ModelSerializer):
     brand = BrandSerializer(read_only=True)
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        return obj.image.url
 
     class Meta:
         model = Shoes

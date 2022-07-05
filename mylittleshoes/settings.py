@@ -144,6 +144,9 @@ AUTH_USER_MODEL = 'user.User'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+OUT_URL = '/'
+OUT_ROOT = os.path.join(BASE_DIR, '')
+
 CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:5500'
                          ,'http://localhost:5500']
 CORS_ALLOW_CREDENTIALS = True

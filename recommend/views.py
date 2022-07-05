@@ -14,8 +14,8 @@ class RecommendViewAll(APIView):
     # 모든 신발 보여주기
     def get(self, request):
         allshoes = Shoes.objects.all()
-        print(allshoes)
-        return Response(ShoesSerializer(allshoes, many=True).data)
+        response = ShoesSerializer(allshoes, many=True).data
+        return Response(response)
 
 
 class RecommendViewBrand(APIView):
