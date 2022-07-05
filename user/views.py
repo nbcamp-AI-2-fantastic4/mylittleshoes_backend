@@ -7,6 +7,7 @@ from django.contrib.auth import login, authenticate, logout
 
 from .serializers import UserSerializer
 from history.models import History, Like
+import json
 
 # 로그인/로그아웃 기능
 class UserView(APIView):
@@ -14,7 +15,11 @@ class UserView(APIView):
 
     # 로그인 기능
     def post(self, request):
-        user = authenticate(request, **request.data)
+        login_data = {
+            'email': request.data.get('email', ''),
+            'password': request.data.get('password', ''),
+        } 
+        user = authenticate(request, **login_data)
         
         if not user:
             msg = '아이디 또는 패스워드를 확인해주세요.'
@@ -44,7 +49,8 @@ class UserInfoView(APIView):
 
     # 회원가입
     def post(self, request):
-        user_serializer = UserSerializer(data=request.data)
+        signup_data = json.loads(request.body)
+        user_serializer = UserSerializer(data=signup_data)
         if user_serializer.is_valid():  # validation
             user_serializer.save()      # create
             return Response({'message': '저장 완료!'}, status=status.HTTP_200_OK)
