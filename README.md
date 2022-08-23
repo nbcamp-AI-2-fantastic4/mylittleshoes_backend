@@ -30,15 +30,11 @@
 
 # 📚 기술 스택
 
-### 1. Back-end
+### Back-end
 
 > python3  
 > Django  
 > Django-rest-framwork
-
-### 2. Front-end
-
-> Node.js
 
 <br />
 
